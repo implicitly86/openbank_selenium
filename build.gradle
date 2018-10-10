@@ -1,0 +1,76 @@
+group 'com.implicitly'
+version '0.0.1'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath "ru.d10xa:gradle-allure-plugin:0.5.5"
+        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.3"
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'ru.d10xa.allure'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    jcenter()
+}
+
+dependencies {
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.14.0'
+    compile group: 'ru.stqa.selenium', name: 'webdriver-factory', version: '4.3'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.2'
+    compile ('io.github.config4k:config4k:0.3.0') {
+        exclude group: 'org.jetbrains.kotlin'
+    }
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    compile group: 'ru.yandex.qatools.ashot', name: 'ashot', version: '1.5.4'
+    compile group: 'ru.yandex.qatools.allure', name: 'allure-testng-adaptor', version: '1.5.3'
+    testCompile group: 'org.testng', name: 'testng', version: '6.14.3'
+}
+
+allure {
+    aspectjweaver = true
+    testNG = true
+    geb = false
+    allureResultsDir = "${buildDir}/allure-results"
+    allureReportDir = "${buildDir}/allure-report"
+    allureVersion = "1.4.23"
+    aspectjVersion = "1.8.10"
+    clean = true
+}
+
+test {
+    //classpath.add(files("${projectDir}/main"))
+    useTestNG {
+        suites 'data/testng.xml'
+    }
+    testLogging.showStandardStreams = true
+    minHeapSize = "128m"
+    maxHeapSize = "512m"
+    jvmArgs '-XX:MaxPermSize=256m'
+    systemProperty 'build.dir', "${buildDir}/allure-results"
+    systemProperty 'stand.config', "data/stand_config/default.conf"
+    systemProperty 'grid.url', System.getProperty("grid.url")
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.implicitly.Main'
+    }
+}
+
+shadowJar {
+    baseName = rootProject.name
+    classifier = null
+    version = version
+}

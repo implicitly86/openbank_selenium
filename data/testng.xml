@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Tests" verbose="5" data-provider-thread-count="6">
+
+    <test name="01. Проверка авторизации">
+        <classes>
+            <class name="com.implicitly.AuthTest">
+                <methods>
+                    <include name="testLogin"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="02. Счета">
+        <classes>
+            <class name="com.implicitly.AccountTest">
+                <methods>
+                    <include name="testGetAccounts"/>
+                    <include name="testAddAccount"/>
+                    <include name="testAddAmount"/>
+                    <include name="testSubtractAmount"/>
+                    <include name="testDeleteAccount"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+</suite>
